@@ -1,14 +1,32 @@
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import MainLayout from "./layout/MainLayout";
+import Home from "./pages/Home";
+import SignIn from "./pages/SignIn";
+import SignUp from "./pages/SignUp";
+import UserProfile from "./pages/UserProfile";
+import WishList from "./pages/WishList";
+import Menu from "./pages/menu";
+import Offer from "./pages/offer";
+
 const App = () => {
-	return (
-		<div className="min-h-screen flex flex-col bg-black text-white/95 items-center justify-center text-2xl font-bold text-center">
-			<img
-				className="size-40"
-				src="https://res.cloudinary.com/dltj8bim0/image/upload/v1761060580/logo_kukwt0.png"
-				alt=""
-			/>
-			<p></p>
-		</div>
-	);
+  return (
+    <Router>
+      <Routes>
+        {/* الراوتس اللي فيها Navbar/Footer */}
+        <Route path="/" element={<MainLayout />}>
+          <Route index element={<Home />} />
+          <Route path="menu" element={<Menu />} />
+          <Route path="offer" element={<Offer />} />
+          <Route path="userprofile" element={<UserProfile />} />
+          <Route path="wishlist" element={<WishList />} />
+        </Route>
+
+        {/* صفحات بدون Navbar/Footer */}
+        <Route path="signin" element={<SignIn />} />
+        <Route path="signup" element={<SignUp />} />
+      </Routes>
+    </Router>
+  );
 };
 
 export default App;
