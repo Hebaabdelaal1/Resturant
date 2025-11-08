@@ -6,6 +6,7 @@ const MenuItemCard = ({
   name,
   price,
   img,
+  description,  
   rating,
   isFavorite,
   onAddToCart,
@@ -14,9 +15,11 @@ const MenuItemCard = ({
   return (
     <div
       key={id}
-      className="bg-gray-900/70 border border-gray-800 rounded-xl p-4 w-[200px] flex flex-col items-center text-center shadow-md hover:shadow-lg transition-transform duration-300 hover:-translate-y-1"
+      className="bg-gray-900/70 border border-gray-800 rounded-xl p-2 w-[250px] flex flex-col items-center text-center shadow-md hover:shadow-lg transition-transform duration-300 hover:-translate-y-1"
     >
-      <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-gray-800 mb-3">
+      {/* <div className="w-26 h-26 l overflow-hidden border-2 border-gray-800 mb-3"> */}
+            <div className="w-full h-28  mb-3">
+
         <img
           src={img}
           alt={name}
@@ -26,11 +29,12 @@ const MenuItemCard = ({
       </div>
 
 
-      <h3 className="text-white text-base font-semibold mb-1">{name}</h3>
+      <h3 className="text-white text-base font-bold mb-1">{name}</h3>
+      <p className="text-gray-400 text-base  mb-1">{description}</p>
 
 
       <div className="flex items-center justify-center gap-2 text-sm text-gray-400 mb-3">
-        <h5 className="text-orange-400 font-bold"> {price} EGP</h5>
+        <h5 className="text-orange-400 font-bold text-xl"> {price} EGP</h5>
         <h6>⭐ {rating}</h6>
       </div>
 

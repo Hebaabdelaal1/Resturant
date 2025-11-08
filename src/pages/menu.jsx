@@ -30,7 +30,7 @@ function Menu() {
   };
 
   return (
-    <div className="min-h-screen bg-black py-10 px-4 text-white">
+    <div className="min-h-screen bg-black  text-white">
   
       <div
         className="relative w-full h-[400px] flex items-center justify-center text-center overflow-hidden mb-10"
@@ -97,6 +97,7 @@ function Menu() {
               key={item.id}
               id={item.id}
               name={item.name}
+              description={item.description}
               price={item.price || (item.sizes && item.sizes[0]?.price)}
               img={`${item.image}?w=400&q=60`}
               rating={item.rating}

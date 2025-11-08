@@ -1,14 +1,16 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { FaEnvelope, FaLock } from "react-icons/fa"; 
-import { Link, Navigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../Firebase/config";
+import toast, { Toaster } from "react-hot-toast";
 
 
 const SignIn = () => {
 
     const {register,handleSubmit, formState: { errors },setError} = useForm();
+    const navigate = useNavigate();
 
  const onSubmit = async (data) => {
     const { email, password } = data;
@@ -17,8 +19,8 @@ const SignIn = () => {
       const result = await signInWithEmailAndPassword(auth, email, password);
       console.log(" Logged in:", result.user);
 
-      alert("Login successful!");
-      Navigate("/"); 
+     toast.success("Login successful!", { duration: 2000, position: "top-center" });
+      navigate("/");
     } catch (error) {
       console.error(" Error:", error.message);
       setError("email", { type: "manual", message: "Invalid email or password" });
@@ -26,6 +28,8 @@ const SignIn = () => {
   };
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-black via-gray-900 to-black px-6 py-12">
+              <Toaster />
+
       <div className="w-full max-w-md bg-gray-900 border border-gray-700 rounded-2xl shadow-2xl p-8 sm:p-10">
         <h2 className="text-center text-3xl font-bold text-white mb-8">
           Login
@@ -89,6 +93,7 @@ const SignIn = () => {
           <button
             type="submit"
             className="w-full rounded-lg bg-orange-600 hover:bg-orange-500 py-2 font-semibold text-white transition-all duration-200 shadow-md hover:shadow-lg"
+
           >
             Login
           </button>
@@ -97,9 +102,9 @@ const SignIn = () => {
  
         <p className="mt-6 text-center text-gray-400 text-sm">
           Don't have an account?{" "}
-        {/* <Link to="/signup" className="text-orange-400 hover:underline font-medium">
+        <Link to="/signup" className="text-orange-400 hover:underline font-medium">
             Sign Up
-          </Link> */}
+          </Link>
         </p>
       </div>
     </div>

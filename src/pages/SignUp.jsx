@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { use, useState } from "react";
 import { useForm } from "react-hook-form";
 import { FiUser, FiMail, FiPhone, FiLock, FiEye, FiEyeOff } from "react-icons/fi";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../Firebase/config";
 import { doc, setDoc } from "firebase/firestore";
 import toast, { Toaster } from "react-hot-toast";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 
 
 const SignUp = () => {
@@ -17,6 +18,7 @@ const SignUp = () => {
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+   const navigate = useNavigate();
 
   const password = watch("password");
 
@@ -32,6 +34,7 @@ const SignUp = () => {
       });
 
      toast.success("Registration successful!", { duration: 2000, position: "top-center" });
+      navigate("/signin");     
     } catch (error) {
        if (error.code === "auth/email-already-in-use") {
       toast.error("This email is already registered!", {
@@ -169,11 +172,11 @@ const SignUp = () => {
             Sign Up
           </button>
         </form>
-          <p className="text-center mt-4 text-sm">
+          <p className="text-center mt-4 text-sm text-white">
           Already have an account?{' '}
-          {/* <Link to="/login" className="text-blue-600 hover:underline">
+          <Link to="/signup" className="text-orange-600 hover:underline">
             Login
-          </Link> */}
+          </Link>
         </p>
       </div>
     </div>
