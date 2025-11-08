@@ -1,9 +1,9 @@
-// src/firebase/config.js
+
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 
-// Firebase configuration
+
 const firebaseConfig = {
   apiKey: "AIzaSyBeH-uBTMq5AIhzhC2Y00xianTBy5KxJCA",
   authDomain: "resturantapp-944f4.firebaseapp.com",
@@ -14,13 +14,13 @@ const firebaseConfig = {
   measurementId: "G-CVWFKTFDZE"
 };
 
-// Initialize Firebase
+
 const app = initializeApp(firebaseConfig);
 
-// Initialize Firestore
+
 export const db = getFirestore(app);
 
-// Initialize Auth
+
 export const auth = getAuth(app);
 
 export default app;
