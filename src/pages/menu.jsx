@@ -97,6 +97,7 @@ function Menu() {
               key={item.id}
               id={item.id}
               name={item.name}
+              description={item.description}
               price={item.price || (item.sizes && item.sizes[0]?.price)}
               img={`${item.image}?w=400&q=60`}
               rating={item.rating}

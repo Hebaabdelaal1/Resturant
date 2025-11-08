@@ -7,6 +7,7 @@ const MenuItemCard = ({
   price,
   img,
   rating,
+  description,
   isFavorite,
   onAddToCart,
   onToggleFavorite,
@@ -33,6 +34,7 @@ const MenuItemCard = ({
         <h5 className="text-orange-400 font-bold"> {price} EGP</h5>
         <h6>⭐ {rating}</h6>
       </div>
+      <p className="text-white text-base  mb-1">{description}</p>
 
       <div className="flex items-center justify-center gap-3 mt-auto">
         <button
