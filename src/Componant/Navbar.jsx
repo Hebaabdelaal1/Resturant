@@ -2,21 +2,47 @@ import { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { Menu, X, Search } from "lucide-react";
 import { FaShoppingCart, FaRegUser } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux"; // ✅ استيراد useSelector
+import { clearCart } from "../features/cartSlice";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(true);
 
+  const dispatch = useDispatch();
+
   const toggleMenu = () => setIsOpen(!isOpen);
   const toggleSearch = () => setIsSearchOpen(!isSearchOpen);
+
+  // ✅ جلب عدد العناصر من cart slice
+  const cartCount = useSelector((state) =>
+    state.cart.items.reduce((sum, item) => sum + item.quantity, 0)
+  );
+
+   const handleLogout = () => {
+    setIsLoggedIn(false);
+    dispatch(clearCart()); // ✅ تصفير الكارت عند logout
+  };
 
   const navLinks = [
     { to: "/", label: "Home" },
     { to: "/menu", label: "Menu" },
     { to: "/offer", label: "Offers" },
     { to: "/wishlist", label: "Wishlist" },
-    { to: "/cart", label: <FaShoppingCart size={18} /> },
+    { 
+      to: "/cart", 
+      label: (
+        <div className="relative">
+          <FaShoppingCart size={18} />
+          {cartCount > 0 && (
+            <span className="absolute -top-2 -right-2 bg-orange-600 text-black text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+              {cartCount}
+            </span>
+          )}
+        </div>
+      ) 
+    },
   ];
 
   return (
@@ -54,7 +80,7 @@ const Navbar = () => {
           ))}
 
           {/* Auth Section */}
-          {isLoggedIn ? (
+           {isLoggedIn ? (
             <div className="flex items-center space-x-3">
               <NavLink
                 to="/userprofile"
@@ -63,7 +89,7 @@ const Navbar = () => {
                 <FaRegUser size={20} />
               </NavLink>
               <button
-                onClick={() => setIsLoggedIn(false)}
+                onClick={handleLogout} // ✅ هنا
                 className="border border-orange-600 hover:bg-orange-600 hover:text-black px-3 py-1 rounded-md font-semibold"
               >
                 Logout
@@ -79,7 +105,7 @@ const Navbar = () => {
           )}
         </div>
 
-        {/* Mobile Buttons (Menu + Search + Profile) */}
+        {/* Mobile Buttons */}
         <div className="md:hidden flex items-center space-x-3">
           {/* Search Icon */}
           <button
@@ -99,17 +125,24 @@ const Navbar = () => {
             </NavLink>
           )}
 
+          {/* Cart Icon Mobile */}
+          <NavLink to="/cart" className="relative">
+            <FaShoppingCart size={22} />
+            {cartCount > 0 && (
+              <span className="absolute -top-2 -right-2 bg-orange-600 text-black text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                {cartCount}
+              </span>
+            )}
+          </NavLink>
+
           {/* Menu Toggle */}
-          <button
-            onClick={toggleMenu}
-            className="focus:outline-none text-white"
-          >
+          <button onClick={toggleMenu} className="focus:outline-none text-white">
             {isOpen ? <X size={28} /> : <Menu size={28} />}
           </button>
         </div>
       </div>
 
-      {/* Mobile Search Bar (Animated) */}
+      {/* Mobile Search Bar */}
       <div
         className={`md:hidden absolute left-0 right-0 top-full bg-black px-4 py-2 transition-all duration-300 overflow-hidden ${
           isSearchOpen ? "max-h-20 opacity-100" : "max-h-0 opacity-0"
@@ -144,11 +177,11 @@ const Navbar = () => {
           ))}
 
           {/* Auth Section */}
-          {isLoggedIn ? (
+            {isLoggedIn ? (
             <div className="flex flex-col items-center space-y-2 mt-3">
               <button
                 onClick={() => {
-                  setIsLoggedIn(false);
+                  handleLogout(); // ✅ تصفير الكارت + تسجيل الخروج
                   setIsOpen(false);
                 }}
                 className="w-full border border-orange-600 hover:bg-orange-600 hover:text-black px-4 py-2 rounded-md font-semibold text-center"
