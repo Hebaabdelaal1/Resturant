@@ -8,7 +8,6 @@ const MenuItemCard = ({
   img,
   description,  
   rating,
-  description,
   isFavorite,
   onAddToCart,
   onToggleFavorite,
