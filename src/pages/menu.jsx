@@ -1,37 +1,98 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchMenuData } from "../features/menuSlice";
 import MenuItemCard from "../Componant/menuCard";
+import { fetchCategories } from "../features/categorySlice";
+import { fetchMenuItems } from "../features/menuSlice";
 import { addToCart, calculateTotal } from "../features/cartSlice";
+import { fetchOffers } from "../features/offersSlice";
 
 function Menu() {
   const dispatch = useDispatch();
-  const { categories, menuItems } = useSelector((state) => state.menu);
+
+  const { items: menuItems, loading } = useSelector((state) => state.menu);
+  const { items: categories } = useSelector((state) => state.categories);
+  const { items: offers } = useSelector((state) => state.offers);
 
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [visibleCount, setVisibleCount] = useState(8);
 
   useEffect(() => {
-    dispatch(fetchMenuData());
+    dispatch(fetchCategories());
+    dispatch(fetchMenuItems());
+    dispatch(fetchOffers());
   }, [dispatch]);
+
+ 
+  const discountedMenuItems = useMemo(() => {
+    const now = new Date();
+
+    return menuItems.map((item) => {
+      let basePrice = item.hasSizes ? item.sizes[0].price : item.price;
+      let bestDiscount = 0;
+      let bestOffer = null;
+
+      offers.forEach((offer) => {
+        const expiry = new Date(offer.validUntil);
+        if (expiry > now) {
+          const offerText = (offer.title + " " + offer.description).toLowerCase();
+
+     
+          const appliesToBurger =
+            offerText.includes("burger") &&
+            item.categoryName?.toLowerCase().includes("burger");
+
+          const appliesToPizza =
+            offerText.includes("pizza") &&
+            item.categoryName?.toLowerCase().includes("pizza");
+
+          const appliesToDrink =
+            offerText.includes("drink") &&
+            item.categoryName?.toLowerCase().includes("drink");
+
+          const appliesToAll = offerText.includes("all");
+
+          if (appliesToBurger || appliesToPizza || appliesToDrink || appliesToAll) {
+            let discountAmount = 0;
+
+            if (offer.discountType === "percentage") {
+              discountAmount = basePrice * (offer.discountValue / 100);
+            } else if (offer.discountType === "fixed") {
+              discountAmount = offer.discountValue;
+            }
+
+   
+            if (discountAmount > bestDiscount) {
+              bestDiscount = discountAmount;
+              bestOffer = offer;
+            }
+          }
+        }
+      });
+
+      const finalPrice = Math.max(basePrice - bestDiscount, 0);
+
+      return {
+        ...item,
+        discountedPrice: finalPrice.toFixed(2),
+        appliedOfferTitle: bestOffer?.title || null,
+      };
+    });
+  }, [menuItems, offers]);
 
   const filteredItems =
     selectedCategory === "all"
-      ? menuItems
-      : menuItems.filter((item) => item.categoryId === selectedCategory);
+      ? discountedMenuItems
+      : discountedMenuItems.filter((item) => item.categoryId === selectedCategory);
 
   const visibleItems = filteredItems.slice(0, visibleCount);
-
-  const handleLoadMore = () => {
-    setVisibleCount((prev) => prev + 8);
-  };
+  const handleLoadMore = () => setVisibleCount((prev) => prev + 8);
 
   const handleAddToCart = (item) => {
     dispatch(
       addToCart({
         id: item.id,
         name: item.name,
-        price: item.hasSizes ? item.sizes[0].price : item.price,
+        price: parseFloat(item.discountedPrice),
         image: item.image,
       })
     );
@@ -40,7 +101,7 @@ function Menu() {
 
   return (
     <div className="min-h-screen bg-black text-white">
-      {/* ---------- Hero Section ---------- */}
+
       <div
         className="relative w-full h-[400px] flex items-center justify-center text-center overflow-hidden mb-10"
         style={{
@@ -55,13 +116,13 @@ function Menu() {
             Discover Our Menu
           </h1>
           <p className="text-gray-300 text-sm sm:text-base max-w-lg mx-auto">
-            From crispy appetizers to hearty main courses and delightful
-            desserts, our menu offers something for every craving.
+            From crispy appetizers to hearty main courses and delightful desserts,
+            our menu offers something for every craving.
           </p>
         </div>
       </div>
 
-      {/* ---------- Category Buttons ---------- */}
+
       <div className="flex justify-center gap-3 flex-wrap mb-10">
         <button
           onClick={() => {
@@ -95,31 +156,43 @@ function Menu() {
         ))}
       </div>
 
-      {/* ---------- Menu Items ---------- */}
+
       <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-        {visibleItems.length === 0 ? (
-          <div className="col-span-full text-center text-gray-400 text-lg py-20">
+        {loading ? (
+          <div className="col-span-full text-center text-gray-400 py-20">
+            Loading menu...
+          </div>
+        ) : visibleItems.length === 0 ? (
+          <div className="col-span-full text-center text-gray-400 py-20">
             No items found.
           </div>
         ) : (
           visibleItems.map((item) => (
-            <MenuItemCard
-              key={item.id}
-              id={item.id}
-              name={item.name}
-              description={item.description}
-              price={item.hasSizes ? item.sizes[0]?.price : item.price}
-              img={`${item.image}?w=400&q=60`}
-              rating={item.rating}
-              isFavorite={false}
-              onAddToCart={() => handleAddToCart(item)} // ✅ Fixed
-              onToggleFavorite={() => console.log("Fav:", item.id)}
-            />
+            <div key={item.id} className="relative">
+
+              {/* {item.appliedOfferTitle && (
+                <div className="absolute top-2 left-2 bg-orange-600 text-white text-xs font-semibold px-2 py-1 rounded">
+                  {item.appliedOfferTitle}
+                </div>
+              )} */}
+
+              <MenuItemCard
+                id={item.id}
+                name={item.name}
+                description={item.description}
+                price={item.discountedPrice}
+                img={`${item.image}?w=400&q=60`}
+                rating={item.rating}
+                // isFavorite={false}
+                onAddToCart={() => handleAddToCart(item)}
+                onToggleFavorite={() => console.log("Fav:", item.id)}
+              />
+            </div>
           ))
         )}
       </div>
 
-      {/* ---------- Load More ---------- */}
+
       {visibleCount < filteredItems.length && (
         <div className="text-center mt-10">
           <button

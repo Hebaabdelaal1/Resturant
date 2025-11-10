@@ -2,43 +2,40 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../Firebase/config";
 
-export const fetchMenuItems = createAsyncThunk(
-  "menuItems/fetchMenuItems",
+
+export const fetchCategories = createAsyncThunk(
+  "categories/fetchCategories",
   async (_, thunkAPI) => {
     try {
-      const snapshot = await getDocs(collection(db, "menuItems"));
-      const items = snapshot.docs.map(doc => ({
+      const snapshot = await getDocs(collection(db, "categories"));
+      const categories = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data(),
       }));
-      return items;
+      return categories;
     } catch (err) {
       return thunkAPI.rejectWithValue(err.message);
     }
   }
 );
 
-const menuSlice = createSlice({
-  name: "menu",
-  initialState: {
-    items: [],
-    loading: false,
-    error: null,
-  },
-  reducers: {},
+const categorySlice = createSlice({
+  name: "categories",
+  initialState: { items: [], loading: false, error: null },
   extraReducers: builder => {
     builder
-      .addCase(fetchMenuItems.pending, state => {
+      .addCase(fetchCategories.pending, state => {
         state.loading = true;
       })
-      .addCase(fetchMenuItems.fulfilled, (state, action) => {
+      .addCase(fetchCategories.fulfilled, (state, action) => {
         state.loading = false;
         state.items = action.payload;
       })
-      .addCase(fetchMenuItems.rejected, (state, action) => {
+      .addCase(fetchCategories.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
   },
 });
-export default menuSlice.reducer;
+
+export default categorySlice.reducer;

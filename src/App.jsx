@@ -16,12 +16,11 @@ import Checkout from "./pages/Checkout ";
 
 const App = () => {
   return (
-    // ✅ لازم Provider الخارجي يكون الأول
+  
     <Provider store={store}>
       <AuthProvider>
         <Router>
           <Routes>
-            {/* ✅ الراوتس اللي فيها Navbar/Footer */}
             <Route path="/" element={<MainLayout />}>
               <Route index element={<Home />} />
               <Route path="menu" element={<Menu />} />
@@ -30,11 +29,10 @@ const App = () => {
               <Route path="wishlist" element={<WishList />} />
 			  <Route path="cart" element={<Cart/>} />
 			  <Route path="checkout" element={<Checkout/>} />
-            </Route>
-
-            {/* ✅ صفحات بدون Navbar/Footer */}
-            <Route path="signin" element={<SignIn />} />
+           <Route path="signin" element={<SignIn />} />
             <Route path="signup" element={<SignUp />} />
+            </Route>
+         
           </Routes>
         </Router>
       </AuthProvider>

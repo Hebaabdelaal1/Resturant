@@ -8,9 +8,9 @@ const MenuItemCard = ({
   img,
   description,  
   rating,
-  isFavorite,
+  // isFavorite,
   onAddToCart,
-  onToggleFavorite,
+  // onToggleFavorite,
 }) => {
   return (
     <div
@@ -34,21 +34,21 @@ const MenuItemCard = ({
 
 
       <div className="flex items-center justify-center gap-2 text-sm text-gray-400 mb-3">
-        <h5 className="text-orange-400 font-bold text-xl"> {price} EGP</h5>
+        <h5 className="text-orange-600 font-bold text-xl"> {price} EGP</h5>
         <h6>⭐ {rating}</h6>
       </div>
       <p className="text-white text-base  mb-1">{description}</p>
 
-      <div className="flex items-center justify-center gap-3 mt-auto">
-        <button
-          onClick={() => onAddToCart({ id, name, price, img })}
-          aria-label={`Add ${name} to cart`}
-          className="p-2 rounded-lg bg-orange-600 hover:bg-orange-500 text-white transition-all duration-150"
-        >
-          <FiShoppingCart className="text-lg" />
-        </button>
+     <div className="flex items-center justify-center gap-3 my-3 w-full">
+  <button
+    onClick={() => onAddToCart({ id, name, price, img })}
+    aria-label={`Add ${name} to cart`}
+    className="flex items-center justify-center p-2 rounded-lg w-26 h-10 bg-orange-600 hover:bg-orange-500 text-white transition-all duration-150"
+  >
+    <FiShoppingCart className="text-lg" />
+  </button>
 
-        <button
+        {/* <button
           onClick={() => onToggleFavorite(id)}
           aria-label={isFavorite ? "Remove from wishlist" : "Add to wishlist"}
           className={`p-2 rounded-lg border border-gray-700 transition-all duration-150 ${
@@ -58,7 +58,7 @@ const MenuItemCard = ({
           }`}
         >
           <FiHeart className={`text-lg ${isFavorite ? "text-white" : ""}`} />
-        </button>
+        </button> */}
       </div>
     </div>
   );
