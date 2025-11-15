@@ -1,5 +1,7 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Form, Link, useNavigate } from "react-router-dom";
+import FormAddReview from "../Componant/FormAddReview";
+import ReviewList from "../Componant/ReviewList";
 
 function Home() {
 
@@ -146,6 +148,11 @@ function Home() {
       className="rounded-xl w-full h-[350px] object-cover md:col-span-2"
     />
   </div>
+</section>
+
+    {/* review */}
+<section className="bg-[#1a1a1a] text-white py-16 px-6 md:px-20 text-center">
+  <ReviewList />
 </section>
 
 {/* ===== LOCATION SECTION ===== */}

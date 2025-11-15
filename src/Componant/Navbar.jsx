@@ -1,35 +1,63 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { Menu, X, Search } from "lucide-react";
 import { FaShoppingCart, FaRegUser } from "react-icons/fa";
-import { useDispatch, useSelector } from "react-redux"; // ✅ استيراد useSelector
+import { useDispatch, useSelector } from "react-redux"; 
 import { clearCart } from "../features/cartSlice";
+import { onAuthStateChanged, signOut } from "firebase/auth";
+import { auth, db } from "../Firebase/config";
+import { doc, getDoc } from "firebase/firestore";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [user, setUser] = useState(null);
+  const [userName, setUserName] = useState("");
 
   const dispatch = useDispatch();
 
   const toggleMenu = () => setIsOpen(!isOpen);
   const toggleSearch = () => setIsSearchOpen(!isSearchOpen);
 
-  // ✅ جلب عدد العناصر من cart slice
   const cartCount = useSelector((state) =>
     state.cart.items.reduce((sum, item) => sum + item.quantity, 0)
   );
 
-   const handleLogout = () => {
-    setIsLoggedIn(false);
-    dispatch(clearCart()); // ✅ تصفير الكارت عند logout
+
+
+useEffect(() => {
+  const unsub = onAuthStateChanged(auth, async (currentUser) => {
+    if (currentUser) {
+      setUser(currentUser);
+
+      const userDocRef = doc(db, "users", currentUser.uid);
+      const userSnap = await getDoc(userDocRef);
+
+      if (userSnap.exists()) {
+        setUserName(userSnap.data().name);
+      } else {
+        setUserName(currentUser.email); 
+      }
+    } else {
+      setUser(null);
+      setUserName("");
+    }
+  });
+
+  return () => unsub();
+}, []);
+
+
+
+  const handleLogout = async () => {
+    await signOut(auth); 
+    dispatch(clearCart()); 
   };
 
   const navLinks = [
     { to: "/", label: "Home" },
     { to: "/menu", label: "Menu" },
     { to: "/offer", label: "Offers" },
-    { to: "/wishlist", label: "Wishlist" },
     { 
       to: "/cart", 
       label: (
@@ -49,11 +77,15 @@ const Navbar = () => {
     <nav className="bg-black text-white px-6 py-6 shadow-md relative">
       <div className="container mx-auto flex items-center justify-between">
         {/* Logo */}
-        <Link to="/" className="text-xl font-bold tracking-wide">
-          MyRestaurant
-        </Link>
+       <Link
+  to="/"
+  className="text-3xl font-extrabold tracking-wide text-orange-500 font-serif hover:text-orange-600 transition-colors"
+>
+  Slice & Bite
+</Link>
 
-        {/* Search Bar (Desktop Center) */}
+
+        {/* Search Bar Desktop */}
         <div className="hidden md:flex items-center bg-white rounded-full px-3 py-1 w-1/3">
           <input
             type="text"
@@ -70,9 +102,7 @@ const Navbar = () => {
               key={to}
               to={to}
               className={({ isActive }) =>
-                `transition-colors duration-200 ${
-                  isActive ? "text-orange-600" : "hover:text-orange-600"
-                }`
+                `transition-colors duration-200 ${isActive ? "text-orange-600" : "hover:text-orange-600"}`
               }
             >
               {label}
@@ -80,16 +110,11 @@ const Navbar = () => {
           ))}
 
           {/* Auth Section */}
-           {isLoggedIn ? (
+          {user ? (
             <div className="flex items-center space-x-3">
-              <NavLink
-                to="/userprofile"
-                className="hover:text-orange-600 transition-colors"
-              >
-                <FaRegUser size={20} />
-              </NavLink>
+           <p className="text-orange-600 text-lg">Hi, {userName}</p>
               <button
-                onClick={handleLogout} // ✅ هنا
+                onClick={handleLogout}
                 className="border border-orange-600 hover:bg-orange-600 hover:text-black px-3 py-1 rounded-md font-semibold"
               >
                 Logout
@@ -107,25 +132,16 @@ const Navbar = () => {
 
         {/* Mobile Buttons */}
         <div className="md:hidden flex items-center space-x-3">
-          {/* Search Icon */}
-          <button
-            onClick={toggleSearch}
-            className="text-white focus:outline-none hover:text-orange-600"
-          >
+          <button onClick={toggleSearch} className="text-white focus:outline-none hover:text-orange-600">
             <Search size={22} />
           </button>
 
-          {/* Profile Icon */}
-          {isLoggedIn && (
-            <NavLink
-              to="/userprofile"
-              className="hover:text-orange-600 transition-colors"
-            >
+          {user && (
+            <NavLink to="/userprofile" className="hover:text-orange-600 transition-colors">
               <FaRegUser size={20} />
             </NavLink>
           )}
 
-          {/* Cart Icon Mobile */}
           <NavLink to="/cart" className="relative">
             <FaShoppingCart size={22} />
             {cartCount > 0 && (
@@ -135,19 +151,14 @@ const Navbar = () => {
             )}
           </NavLink>
 
-          {/* Menu Toggle */}
           <button onClick={toggleMenu} className="focus:outline-none text-white">
             {isOpen ? <X size={28} /> : <Menu size={28} />}
           </button>
         </div>
       </div>
 
-      {/* Mobile Search Bar */}
-      <div
-        className={`md:hidden absolute left-0 right-0 top-full bg-black px-4 py-2 transition-all duration-300 overflow-hidden ${
-          isSearchOpen ? "max-h-20 opacity-100" : "max-h-0 opacity-0"
-        }`}
-      >
+      {/* Mobile Search */}
+      <div className={`md:hidden absolute left-0 right-0 top-full bg-black px-4 py-2 transition-all duration-300 overflow-hidden ${isSearchOpen ? "max-h-20 opacity-100" : "max-h-0 opacity-0"}`}>
         <div className="flex items-center bg-white rounded-full px-3 py-1">
           <input
             type="text"
@@ -167,21 +178,18 @@ const Navbar = () => {
               to={to}
               onClick={() => setIsOpen(false)}
               className={({ isActive }) =>
-                `block transition-colors duration-200 ${
-                  isActive ? "text-orange-600" : "hover:text-orange-600"
-                }`
+                `block transition-colors duration-200 ${isActive ? "text-orange-600" : "hover:text-orange-600"}`
               }
             >
               {label}
             </NavLink>
           ))}
 
-          {/* Auth Section */}
-            {isLoggedIn ? (
+          {user ? (
             <div className="flex flex-col items-center space-y-2 mt-3">
               <button
                 onClick={() => {
-                  handleLogout(); // ✅ تصفير الكارت + تسجيل الخروج
+                  handleLogout();
                   setIsOpen(false);
                 }}
                 className="w-full border border-orange-600 hover:bg-orange-600 hover:text-black px-4 py-2 rounded-md font-semibold text-center"
