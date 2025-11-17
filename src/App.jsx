@@ -13,6 +13,7 @@ import { store } from "./Store";
 import Cart from "./pages/Cart";
 import { Check } from "lucide-react";
 import Checkout from "./pages/Checkout ";
+import OrderSuccess from "./pages/OrderSuccess";
 
 const App = () => {
   return (
@@ -27,6 +28,8 @@ const App = () => {
               <Route path="offer" element={<Offer />} />
               <Route path="userprofile" element={<UserProfile />} />
               <Route path="wishlist" element={<WishList />} />
+              <Route path="/order-success/:id" element={<OrderSuccess />} />
+
 			  <Route path="cart" element={<Cart/>} />
 			  <Route path="checkout" element={<Checkout/>} />
            <Route path="signin" element={<SignIn />} />

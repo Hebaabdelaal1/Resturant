@@ -5,6 +5,7 @@ import { fetchCategories } from "../features/categorySlice";
 import { fetchMenuItems } from "../features/menuSlice";
 import { addToCart, calculateTotal } from "../features/cartSlice";
 import { fetchOffers } from "../features/offersSlice";
+import { Toaster } from "react-hot-toast";
 
 function Menu() {
   const dispatch = useDispatch();
@@ -87,20 +88,28 @@ function Menu() {
   const visibleItems = filteredItems.slice(0, visibleCount);
   const handleLoadMore = () => setVisibleCount((prev) => prev + 8);
 
-  const handleAddToCart = (item) => {
-    dispatch(
-      addToCart({
-        id: item.id,
-        name: item.name,
-        price: parseFloat(item.discountedPrice),
-        image: item.image,
-      })
-    );
-    dispatch(calculateTotal());
-  };
+
+
+const handleAddToCart = (menuItem, cartItem) => {
+  dispatch(
+    addToCart({
+      id: menuItem.id,
+      name: menuItem.name,
+      price: parseFloat(cartItem.price),
+      size: cartItem.size,
+      image: menuItem.image,
+      availableSizes: cartItem.availableSizes,
+      availableSizesData: menuItem.sizes,
+    })
+  );
+
+  dispatch(calculateTotal());
+};
+
 
   return (
     <div className="min-h-screen bg-black text-white">
+      <Toaster />
 
       <div
         className="relative w-full h-[400px] flex items-center justify-center text-center overflow-hidden mb-10"
@@ -176,17 +185,17 @@ function Menu() {
                 </div>
               )} */}
 
-              <MenuItemCard
-                id={item.id}
-                name={item.name}
-                description={item.description}
-                price={item.discountedPrice}
-                img={`${item.image}?w=400&q=60`}
-                rating={item.rating}
-                // isFavorite={false}
-                onAddToCart={() => handleAddToCart(item)}
-                onToggleFavorite={() => console.log("Fav:", item.id)}
-              />
+             <MenuItemCard
+  id={item.id}
+  name={item.name}
+  img={item.image}
+  description={item.description}
+  hasSizes={item.hasSizes}
+  sizes={item.sizes}
+  price={item.discountedPrice} // سعر الأساسي (للعرض فقط)
+  onAddToCart={(cartItem) => handleAddToCart(item, cartItem)} // ← عدّل هنا
+/>
+
             </div>
           ))
         )}
