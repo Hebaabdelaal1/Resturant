@@ -12,7 +12,7 @@ import Cart from "./pages/Cart";
 import { Check } from "lucide-react";
 import Checkout from "./pages/Checkout ";
 import OrderSuccess from "./pages/OrderSuccess";
-import SearchResult from "./Componant/searchResult";
+import SearchResult from "./Component/searchResult";
 
 const App = () => {
   return (

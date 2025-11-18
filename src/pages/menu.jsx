@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import MenuItemCard from "../Componant/menuCard";
+import MenuItemCard from "../Component/menuCard";
 import { fetchCategories } from "../features/categorySlice";
 import { fetchMenuItems } from "../features/menuSlice";
 import { addToCart, calculateTotal } from "../features/cartSlice";

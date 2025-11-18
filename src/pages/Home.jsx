@@ -1,7 +1,7 @@
 import React from "react";
 import { Form, Link, useNavigate } from "react-router-dom";
-import FormAddReview from "../Componant/FormAddReview";
-import ReviewList from "../Componant/ReviewList";
+import FormAddReview from "../Component/FormAddReview";
+import ReviewList from "../Component/ReviewList";
 
 function Home() {
 
