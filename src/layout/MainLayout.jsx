@@ -1,7 +1,7 @@
 import React from 'react'
 import { Outlet } from 'react-router-dom'
 import Navbar from '../Component/Navbar.jsx'
- import Footer from '../Component/footer.jsx'
+ import Footer from '../Component/Footer.jsx'
 
 
 
