@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { Menu, X, Search } from "lucide-react";
 import { FaShoppingCart, FaRegUser } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux"; 
@@ -13,6 +13,8 @@ const Navbar = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [userName, setUserName] = useState("");
+  const [search , setSearch] =useState("");
+  const navigate =useNavigate();
 
   const dispatch = useDispatch();
 
@@ -47,6 +49,10 @@ useEffect(() => {
   return () => unsub();
 }, []);
 
+const handleSearch = () => {
+  if (!search.trim()) return;
+  navigate(`/search?query=${encodeURIComponent(search)}`);
+};
 
 
   const handleLogout = async () => {
@@ -90,7 +96,13 @@ useEffect(() => {
           <input
             type="text"
             placeholder="Search..."
+            value={search}
             className="flex-grow px-2 text-black text-sm focus:outline-none"
+            onChange={(e) => setSearch(e.target.value)}
+         onKeyDown={(e) => {
+  if (e.key === "Enter") handleSearch();
+}}
+
           />
           <Search className="text-orange-600" size={18} />
         </div>
@@ -137,9 +149,8 @@ useEffect(() => {
           </button>
 
           {user && (
-            <NavLink to="/userprofile" className="hover:text-orange-600 transition-colors">
-              <FaRegUser size={20} />
-            </NavLink>
+                 <p className="text-orange-600 text-m">Hi, {userName}</p>
+           
           )}
 
           <NavLink to="/cart" className="relative">
@@ -163,7 +174,12 @@ useEffect(() => {
           <input
             type="text"
             placeholder="Search..."
-            className="flex-grow px-2 text-black text-sm focus:outline-none"
+                      value={search}
+            className="flex-grow px-2 text-black text-sm focus:outline-none z-10"
+            onChange={(e) => setSearch(e.target.value)}
+         onKeyDown={(e) => {
+  if (e.key === "Enter") handleSearch();
+}}
           />
           <Search className="text-orange-600" size={18} />
         </div>

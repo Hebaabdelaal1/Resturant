@@ -41,10 +41,7 @@ const [open, setOpen] = useState(false);
 
       <p className="text-gray-400 text-sm mb-2">{description}</p>
 
-{/* Animated custom dropdown (legacy code removed) */}
 
-
-      {/* ---------------- Price ---------------- */}
       <h5 className="text-orange-600 font-bold text-xl mb-3">
         {selectedSize.price} EGP
       </h5>
@@ -52,11 +49,10 @@ const [open, setOpen] = useState(false);
 
       <div className="w-full flex items-center justify-center gap-3 mt-3">
 
-  {/* --- Dropdown Container --- */}
   <div className="relative w-auto">
     {hasSizes ? (
       <>
-        {/* Dropdown Button */}
+
         <button
           onClick={() => setOpen(!open)}
           className="

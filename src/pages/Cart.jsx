@@ -80,7 +80,7 @@ const Cart = () => {
               )}
 
 
-              <p className="text-orange-500 font-bold">${item.price}</p>
+              <p className="text-orange-500 font-bold">{item.price} EGP</p>
             </div>
             <div className="flex items-center space-x-3">
 

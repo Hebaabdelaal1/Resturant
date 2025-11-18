@@ -25,7 +25,13 @@ function Offer() {
       });
   }, [offers]);
 
-  if (loading) return <p className="text-center text-gray-300 mt-10">Loading offers...</p>;
+  if  (loading)
+  return (
+    <div className="min-h-screen bg-black flex items-center justify-center">
+      <p className="text-white text-lg">Loading offers...</p>
+    </div>
+  );
+
   if (error) return <p className="text-center text-red-500 mt-10">Error: {error}</p>;
 
   return (
@@ -33,7 +39,7 @@ function Offer() {
 
 
       <div
-        className="relative w-full h-[300px] flex flex-col items-center justify-center text-center mb-10"
+        className="relative w-full h-[300px] flex flex-col items-center justify-center text-center mb-10 bg-black"
         style={{
           backgroundImage: "url('/Imgs/photo.avif')",
           backgroundSize: "cover",
