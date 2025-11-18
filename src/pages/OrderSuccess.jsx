@@ -4,7 +4,7 @@ import { db } from "../Firebase/config";
 import { doc, getDoc } from "firebase/firestore";
 
 const OrderSuccess = () => {
-  const { id } = useParams(); // orderId
+  const { id } = useParams();
   const navigate = useNavigate();
   const [order, setOrder] = useState(null);
 
@@ -28,7 +28,7 @@ const OrderSuccess = () => {
   return (
     <div className="min-h-screen bg-black text-white p-6 flex flex-col items-center">
       <h1 className="text-3xl font-bold text-green-500 mb-4">
-        🎉 Order Confirmed!
+        Order Confirmed!
       </h1>
 
       <div className="bg-gray-900 p-6 rounded-2xl w-full max-w-xl shadow-lg space-y-4">
@@ -70,14 +70,14 @@ const OrderSuccess = () => {
                   Qty: {item.quantity}
                 </p>
               </div>
-              <p>${item.price * item.quantity}</p>
+              <p>{item.price * item.quantity} EGP</p>
             </div>
           ))}
         </div>
 
         <div className="flex justify-between font-bold text-lg mt-3">
           <span>Total</span>
-          <span>${order.total}</span>
+          <span>{order.total} EGP</span>
         </div>
       </div>
 
